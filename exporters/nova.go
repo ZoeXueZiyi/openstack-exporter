@@ -16,7 +16,7 @@ import (
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/extendedserverattributes"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/hypervisors"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/limits"
-	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/secgroups"
+	// "github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/secgroups"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/services"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/usage"
 	"github.com/gophercloud/gophercloud/openstack/compute/v2/flavors"
@@ -76,7 +76,7 @@ var defaultNovaMetrics = []Metric{
 	{Name: "flavors", Fn: ListFlavors},
 	{Name: "flavor", Labels: []string{"id", "name", "vcpus", "ram", "disk", "is_public"}},
 	{Name: "availability_zones", Fn: ListAZs},
-	{Name: "security_groups", Fn: ListComputeSecGroups},
+	// {Name: "security_groups", Fn: ListComputeSecGroups},
 	{Name: "total_vms", Fn: ListAllServers},
 	{Name: "agent_state", Labels: []string{"id", "hostname", "service", "adminState", "zone", "disabledReason"}, Fn: ListNovaAgentState},
 	{Name: "running_vms", Labels: []string{"hostname", "availability_zone", "aggregates"}, Fn: ListHypervisors},
@@ -270,23 +270,23 @@ func ListAZs(exporter *BaseOpenStackExporter, ch chan<- prometheus.Metric) error
 	return nil
 }
 
-func ListComputeSecGroups(exporter *BaseOpenStackExporter, ch chan<- prometheus.Metric) error {
-	var allSecurityGroups []secgroups.SecurityGroup
+// func ListComputeSecGroups(exporter *BaseOpenStackExporter, ch chan<- prometheus.Metric) error {
+// 	var allSecurityGroups []secgroups.SecurityGroup
 
-	allPagesSecurityGroups, err := secgroups.List(exporter.Client).AllPages()
-	if err != nil {
-		return err
-	}
+// 	allPagesSecurityGroups, err := secgroups.List(exporter.Client).AllPages()
+// 	if err != nil {
+// 		return err
+// 	}
 
-	if allSecurityGroups, err = secgroups.ExtractSecurityGroups(allPagesSecurityGroups); err != nil {
-		return err
-	}
+// 	if allSecurityGroups, err = secgroups.ExtractSecurityGroups(allPagesSecurityGroups); err != nil {
+// 		return err
+// 	}
 
-	ch <- prometheus.MustNewConstMetric(exporter.Metrics["security_groups"].Metric,
-		prometheus.GaugeValue, float64(len(allSecurityGroups)))
+// 	ch <- prometheus.MustNewConstMetric(exporter.Metrics["security_groups"].Metric,
+// 		prometheus.GaugeValue, float64(len(allSecurityGroups)))
 
-	return nil
-}
+// 	return nil
+// }
 
 func ListAllServers(exporter *BaseOpenStackExporter, ch chan<- prometheus.Metric) error {
 	type ServerWithExt struct {
